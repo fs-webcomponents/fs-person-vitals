@@ -1,6 +1,8 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../polymer/lib/elements/dom-if.html">
 <link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-item/paper-item.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-styles/paper-styles.html">
 <link rel="import" href="../fs-person-mixin/fs-person-mixin.html">
 <link rel="import" href="../fs-fact/fs-fact.html">
@@ -15,10 +17,37 @@
       paper-card {
         width: 100%;
       }
+      
+      .fact-container {
+        padding: 16px;
+      }
+      
+      .fact-container:not(:first-child) {
+        border-top: 1px solid #e0e0e0;
+      }
+      
+      [hidden] {
+        display: none !important;
+      }
     </style>
     <paper-card>
-      <div class="card-content">
-        <fs-fact id="birth" fact="{{birth}}" editable save-url="[[_saveUrl]]"></fs-fact>
+      <div class="fact-container">
+        <fs-fact 
+          id="birth" 
+          fact="{{birth}}" 
+          editable
+          save-url="[[_saveUrl]]"
+          hidden$="[[!_hasBirth]]"></fs-fact>
+        <paper-button hidden$="[[_hasBirth]]" on-tap="_addBirth">Add Birth</paper-button>
+      </div>
+      <div class="fact-container">
+        <fs-fact 
+          id="christening" 
+          fact="{{christening}}" 
+          editable 
+          save-url="[[_saveUrl]]" 
+          hidden$="[[!_hasChristening]]"></fs-fact>
+        <paper-button hidden$="[[_hasChristening]]" on-tap="_addChristening">Add Christening</paper-button>
       </div>
     </paper-card>
   </template>
@@ -40,7 +69,17 @@
           christening: Object,
           death: Object,
           burial: Object,
-          _saveUrl: String
+          _saveUrl: String,
+          _hasBirth: {
+            type: Boolean,
+            value: false,
+            computed: '_hasVital(birth)'
+          },
+          _hasChristening: {
+            type: Boolean,
+            value: false,
+            computed: '_hasVital(christening)'
+          }
         };
       }
       
@@ -58,6 +97,20 @@
           this.burial = newFacts['http://gedcomx.org/Burial'];
           this._saveUrl = this.person.links.person.href;
         }
+      }
+      
+      _hasVital(vital) {
+        return !!vital;
+      }
+      
+      _addBirth() {
+        this.birth = {type:'http://gedcomx.org/Birth'};
+        this.$.birth.edit = true;
+      }
+      
+      _addChristening() {
+        this.christening = {type:'http://gedcomx.org/Christening'};
+        this.$.christening.edit = true;
       }
     }
 
