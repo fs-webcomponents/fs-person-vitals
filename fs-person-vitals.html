@@ -49,6 +49,24 @@
           hidden$="[[!_hasChristening]]"></fs-fact>
         <paper-button hidden$="[[_hasChristening]]" on-tap="_addChristening">Add Christening</paper-button>
       </div>
+      <div class="fact-container">
+        <fs-fact 
+          id="death" 
+          fact="{{death}}" 
+          editable
+          save-url="[[_saveUrl]]"
+          hidden$="[[!_hasDeath]]"></fs-fact>
+        <paper-button hidden$="[[_hasDeath]]" on-tap="_addDeath">Add Death</paper-button>
+      </div>
+      <div class="fact-container">
+        <fs-fact 
+          id="burial" 
+          fact="{{burial}}" 
+          editable
+          save-url="[[_saveUrl]]"
+          hidden$="[[!_hasBurial]]"></fs-fact>
+        <paper-button hidden$="[[_hasBurial]]" on-tap="_addBurial">Add Burial</paper-button>
+      </div>
     </paper-card>
   </template>
 
@@ -79,6 +97,16 @@
             type: Boolean,
             value: false,
             computed: '_hasVital(christening)'
+          },
+          _hasDeath: {
+            type: Boolean,
+            value: false,
+            computed: '_hasVital(death)'
+          },
+          _hasBurial: {
+            type: Boolean,
+            value: false,
+            computed: '_hasVital(burial)'
           }
         };
       }
@@ -111,6 +139,16 @@
       _addChristening() {
         this.christening = {type:'http://gedcomx.org/Christening'};
         this.$.christening.edit = true;
+      }
+      
+      _addDeath() {
+        this.death = {type:'http://gedcomx.org/Death'};
+        this.$.death.edit = true;
+      }
+      
+      _addBurial() {
+        this.burial = {type:'http://gedcomx.org/Burial'};
+        this.$.burial.edit = true;
       }
     }
 
