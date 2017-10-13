@@ -1,0 +1,66 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../polymer/lib/elements/dom-if.html">
+<link rel="import" href="../paper-card/paper-card.html">
+<link rel="import" href="../paper-styles/paper-styles.html">
+<link rel="import" href="../fs-person-mixin/fs-person-mixin.html">
+<link rel="import" href="../fs-fact/fs-fact.html">
+
+<dom-module id="fs-person-vitals">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      
+      paper-card {
+        width: 100%;
+      }
+    </style>
+    <paper-card>
+      <div class="card-content">
+        <fs-fact id="birth" fact="{{birth}}" editable save-url="[[_saveUrl]]"></fs-fact>
+      </div>
+    </paper-card>
+  </template>
+
+  <script>
+    /**
+     * `fs-person-vitals`
+     * 
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class FSPersonVitals extends FSPersonMixin(Polymer.Element) {
+      static get is() { return 'fs-person-vitals'; }
+      static get properties() {
+        return {
+          birth: Object,
+          christening: Object,
+          death: Object,
+          burial: Object,
+          _saveUrl: String
+        };
+      }
+      
+      _personChanged() {
+        if(this.person && this.person.facts){
+          const newFacts = this.person.facts.reduce(function(accumulator, fact){
+            // Here we're okay with overriding duplicates because we're only
+            // interested in vitals and those are guaranteed to not have duplicates
+            accumulator[fact.type] = fact;
+            return accumulator;
+          }, {});
+          this.birth = newFacts['http://gedcomx.org/Birth'];
+          this.christening = newFacts['http://gedcomx.org/Christening'];
+          this.death = newFacts['http://gedcomx.org/Death'];
+          this.burial = newFacts['http://gedcomx.org/Burial'];
+          this._saveUrl = this.person.links.person.href;
+        }
+      }
+    }
+
+    window.customElements.define(FSPersonVitals.is, FSPersonVitals);
+  </script>
+</dom-module>
